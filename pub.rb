@@ -3,9 +3,9 @@ require 'json'
 
 redis = Redis.new
 
-data = {"user" => ARGV[1]}
+data = {"user" => "user1"}
 
 loop do
   msg = STDIN.gets
-  redis.publish ARGV[0], data.merge('msg' => msg.strip).to_json
+  redis.publish "publisher1", data.merge('msg' => msg.strip).to_json
 end
