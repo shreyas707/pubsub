@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>PubSub Notification</title>
+</head>
+
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script> -->
+
+<body>
+    <h1>Implementing PubSub via Redis and Pushing Notifications using Websockets</h1>
+
+    <div id="notification" placeholder="Notification"></div>
+
+    <script>
+        var socket = io.connect("http://localhost:3000");
+        const notificationHandle = document.getElementById('notification')
+
+        // Listen for events
+        socket.on('notification', function (data) {
+            notificationHandle.innerHTML = data.msg
+
+            // Notifications
+            if (Notification.permission === "granted") {
+                console.log('Notification permission already granted. Status:', Notification.permission)
+               
+                var notification = new Notification(data.msg);
+            }
+
+            // ask the user for permission
+            else if (Notification.permission === "denied" || Notification.permission === "default") {
+                Notification.requestPermission().then(function (permission) {
+                    // If the user accepts, let's create a notification
+                    if (permission === "granted") {
+                        console.log("Granted permission now. Status: ", permission)
+                        var notification = new Notification(data.msg);
+                    }
+                });
+            }
+
+        })
+
+    </script>
+
+</body>
+
+</html>
